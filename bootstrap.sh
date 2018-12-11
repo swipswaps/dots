@@ -187,7 +187,7 @@ sudo apt-get install -y build-essential gcc g++ make zsh tmux tmuxinator ruby gi
     libssl-dev libxml2-dev libyaml-dev libgmp-dev libreadline-dev #crystal extras
 
 sudo gem install tmuxinator
-sudo ln -s /usr/local/bin/tmuxinator /usr/local/bin/mux
+#sudo ln -s /usr/local/bin/tmuxinator /usr/local/bin/mux
 
 sudo pip install --upgrade pip
 sudo pip install glances awscli
