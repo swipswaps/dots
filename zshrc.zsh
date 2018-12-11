@@ -1,4 +1,4 @@
-export ZSH=$HOME/dots/oh-my-zsh
+export ZSH=$HOME/.oh-my-zsh
 
 if ! [ -d "$ZSH" ]; then
   echo "oh-my-zsh not present"
@@ -33,7 +33,7 @@ done
 
 plugins=(git git-extras python sudo systemd php composer node npm sudo symfony2 wd command-not-found docker tmux tmuxinator pip fedora dnf fabric jira last-working-dir mvn)
 
-export PATH=$PATH:/opt/matiss/depot_tools:${HOME}/.bin:${HOME}/.composer/vendor/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+export PATH=$PATH:${HOME}/.bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 source $ZSH/oh-my-zsh.sh
 
@@ -50,3 +50,4 @@ set_term_title(){
 
 export JAVA_CMD=/usr/bin/java
 export LD_LIBRARY_PATH=/lib:/usr/lib:/usr/local/lib
+source $HOME/.cargo/env
