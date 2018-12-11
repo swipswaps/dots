@@ -170,9 +170,8 @@ echo "deb https://download.virtualbox.org/virtualbox/debian $DOTS_UBUNTU_SPORK c
 
 # Google Cloud SDK && Kubectl
 CLOUD_SDK_REPO="cloud-sdk-$DOTS_UBUNTU_SPORK"
-KUBE_REPO="kubernetes-$DOTS_UBUNTU_SPORK"
 echo "deb https://packages.cloud.google.com/apt $CLOUD_SDK_REPO main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
-echo "deb https://packages.cloud.google.com/apt $KUBE_REPO main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
+echo "deb https://packages.cloud.google.com/apt kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list # Not a typo.
 
 # Heroku CLI
 echo "deb https://cli-assets.heroku.com/apt ./" | sudo tee /etc/apt/sources.list.d/heroku.list
