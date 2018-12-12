@@ -228,3 +228,4 @@ sudo chsh -s /usr/bin/zsh ${DOTS_USER}
 git config --global core.excludesfile ~/.gitignore
 git config --global user.email "mrtreinis@gmail.com"
 git config --global user.name "Matīss Treinis"
+git config --global push.default current
