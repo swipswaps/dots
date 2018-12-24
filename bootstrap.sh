@@ -4,6 +4,13 @@
 # - Autoremove elementary os / ubuntu bloat?
 # - Development PEM's for localhost
 # - Automate Chromium settings? Ex. chrome://flags/#allow-insecure-localhost
+# - Ensure py3 and Groovy (http://groovy-lang.org/install.html)
+# - Py3 DS libs numpy scipy pandas matplotlib + jupyter nb https://jupyter.org/install 
+# - mycli / pgcli / robomongo
+# - python3-sphinx
+# - percona toolkit (https://www.percona.com/doc/percona-toolkit/LATEST/installation.html)
+# - symlink mux to /usr/bin/tmuxinator
+# - local databases for etl? disabled in systemd by default.
 # - Other missing stuff?...
 set -e
 set -x
