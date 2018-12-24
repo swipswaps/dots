@@ -11,6 +11,7 @@
 # - percona toolkit (https://www.percona.com/doc/percona-toolkit/LATEST/installation.html)
 # - symlink mux to /usr/bin/tmuxinator
 # - local databases for etl? disabled in systemd by default.
+# - update alternatives replace vi(m) with micro
 # - Other missing stuff?...
 set -e
 set -x
