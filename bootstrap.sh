@@ -34,6 +34,9 @@ ln -sf "$DOTS_ROOT/.gitignore_global" "$DOTS_HOME/.gitignore"
 ln -sf "$DOTS_ROOT/.editorconfig" "$DOTS_HOME/.editorconfig"
 ln -sf "$DOTS_ROOT/.wgetrc" "$DOTS_HOME/.wgetrc"
 
+# Initial APT install
+sudo apt install gparted samba build-essential
+
 echo "Bootstrapping $DOTS_OPT ..."
 
 sudo mkdir -p "$DOTS_OPT" && sudo chown ${DOTS_USER}:${DOTS_GROUP} "$DOTS_OPT"
@@ -108,11 +111,11 @@ sh build.sh
 bin/nim c koch
 ./koch tools
 
-sudo update-alternatives --install "/usr/bin/nim" "nim" "$DOTS_OPT/nim-$NIM_VERSION/bin/nim" 5000 | true
-sudo update-alternatives --install "/usr/bin/nimble" "nimble" "$DOTS_OPT/nim-$NIM_VERSION/bin/nimble" 5000 | true
-sudo update-alternatives --install "/usr/bin/nimgrep" "nimgrep" "$DOTS_OPT/nim-$NIM_VERSION/bin/nimgrep" 5000 | true
-sudo update-alternatives --install "/usr/bin/nimpretty" "nimpretty" "$DOTS_OPT/nim-$NIM_VERSION/bin/nimpretty" 5000 | true
-sudo update-alternatives --install "/usr/bin/nimsuggest" "nimsuggest" "$DOTS_OPT/nim-$NIM_VERSION/bin/nimsuggest" 5000 | true
+sudo update-alternatives --install "/usr/bin/nim" "nim" "$DOTS_OPT/nim-$NIM_VERSION/bin/nim" 5000
+sudo update-alternatives --install "/usr/bin/nimble" "nimble" "$DOTS_OPT/nim-$NIM_VERSION/bin/nimble" 5000
+sudo update-alternatives --install "/usr/bin/nimgrep" "nimgrep" "$DOTS_OPT/nim-$NIM_VERSION/bin/nimgrep" 5000
+sudo update-alternatives --install "/usr/bin/nimpretty" "nimpretty" "$DOTS_OPT/nim-$NIM_VERSION/bin/nimpretty" 5000 
+sudo update-alternatives --install "/usr/bin/nimsuggest" "nimsuggest" "$DOTS_OPT/nim-$NIM_VERSION/bin/nimsuggest" 5000
 
 # Stuff
 echo "Installing things..."
