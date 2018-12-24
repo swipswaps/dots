@@ -1,4 +1,10 @@
 #!/bin/bash
+# TODO
+# - PHP composer
+# - Autoremove elementary os / ubuntu bloat?
+# - Development PEM's for localhost
+# - Automate Chromium settings? Ex. chrome://flags/#allow-insecure-localhost
+# - Other missing stuff?...
 set -e
 set -x
 APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
