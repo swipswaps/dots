@@ -2,3 +2,7 @@
 	path = oh-my-zsh
 	url = git@github.com:robbyrussell/oh-my-zsh.git
 	branch = master
+[submodule "rbenv"]
+	path = rbenv
+	url = git@github.com:rbenv/rbenv.git
+	branch = master

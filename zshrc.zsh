@@ -1,7 +1,13 @@
 export ZSH=$HOME/.oh-my-zsh
+export RBENV=$HOME/.rbenv-git
 
 if ! [ -d "$ZSH" ]; then
   echo "oh-my-zsh not present"
+  return
+fi
+
+if ! [ -d "$RBENV" ]; then
+  echo "rbenv-git not present"
   return
 fi
 
@@ -11,7 +17,6 @@ if ! type "micro" > /dev/null; then
 else
   export EDITOR='micro'
 fi
-
 
 if ! type "tmuxinator" > /dev/null; then
   echo "tmuxinator not installed, but is required"
@@ -33,7 +38,7 @@ done
 
 plugins=(git git-extras python sudo systemd php composer node npm sudo symfony2 wd command-not-found docker tmux tmuxinator pip fedora dnf fabric jira last-working-dir mvn)
 
-export PATH=$PATH:${HOME}/.bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+export PATH=$PATH:$RBENV/bin:${HOME}/.bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 source $ZSH/oh-my-zsh.sh
 
