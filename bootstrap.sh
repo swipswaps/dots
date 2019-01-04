@@ -224,7 +224,7 @@ sudo apt-get update
 sudo apt-get install -y build-essential gcc g++ make zsh tmux tmuxinator ruby git git-extras openvpn php-cli meld nodejs yarn pssh \
     apt-transport-https ca-certificates curl software-properties-common docker-ce virtualbox-5.2 google-cloud-sdk heroku azure-cli kubectl \
     crystal chromium-browser slack-desktop insomnia revelation python-pip zenmap filezilla vlc gimp spotify-client \
-    ruby ruby-dev sqlite3 python3-sphinx
+    ruby ruby-dev sqlite3 libsqlite3-dev python3-sphinx
     libssl-dev libxml2-dev libyaml-dev libgmp-dev libreadline-dev #crystal extras
 
 #sudo gem install tmuxinator
