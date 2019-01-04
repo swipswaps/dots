@@ -8,6 +8,7 @@
 # - Py3 DS libs numpy scipy pandas matplotlib + jupyter nb https://jupyter.org/install 
 # - mycli / pgcli / robomongo
 # - python3-sphinx
+# - nnn (https://github.com/jarun/nnn)
 # - percona toolkit (https://www.percona.com/doc/percona-toolkit/LATEST/installation.html)
 # - symlink mux to /usr/bin/tmuxinator
 # - local databases for etl? disabled in systemd by default.
