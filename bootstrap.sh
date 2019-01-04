@@ -1,4 +1,19 @@
 #!/bin/bash
+# TODO
+# - PHP composer
+# - Autoremove elementary os / ubuntu bloat?
+# - Development PEM's for localhost
+# - Automate Chromium settings? Ex. chrome://flags/#allow-insecure-localhost
+# - Ensure py3 and Groovy (http://groovy-lang.org/install.html)
+# - Py3 DS libs numpy scipy pandas matplotlib + jupyter nb https://jupyter.org/install 
+# - mycli / pgcli / robomongo
+# - python3-sphinx
+# - nnn (https://github.com/jarun/nnn)
+# - percona toolkit (https://www.percona.com/doc/percona-toolkit/LATEST/installation.html)
+# - symlink mux to /usr/bin/tmuxinator
+# - local databases for etl? disabled in systemd by default.
+# - update alternatives replace vi(m) with micro
+# - Other missing stuff?...
 set -e
 set -x
 APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
@@ -34,6 +49,9 @@ ln -sf "$DOTS_ROOT/rbenv" "$DOTS_HOME/.rbenv-git"
 ln -sf "$DOTS_ROOT/.gitignore_global" "$DOTS_HOME/.gitignore"
 ln -sf "$DOTS_ROOT/.editorconfig" "$DOTS_HOME/.editorconfig"
 ln -sf "$DOTS_ROOT/.wgetrc" "$DOTS_HOME/.wgetrc"
+
+# Initial APT install
+sudo apt install gparted samba build-essential
 
 echo "Bootstrapping $DOTS_OPT ..."
 
@@ -109,11 +127,11 @@ sh build.sh
 bin/nim c koch
 ./koch tools
 
-sudo update-alternatives --install "/usr/bin/nim" "nim" "$DOTS_OPT/nim-$NIM_VERSION/bin/nim" 5000 | true
-sudo update-alternatives --install "/usr/bin/nimble" "nimble" "$DOTS_OPT/nim-$NIM_VERSION/bin/nimble" 5000 | true
-sudo update-alternatives --install "/usr/bin/nimgrep" "nimgrep" "$DOTS_OPT/nim-$NIM_VERSION/bin/nimgrep" 5000 | true
-sudo update-alternatives --install "/usr/bin/nimpretty" "nimpretty" "$DOTS_OPT/nim-$NIM_VERSION/bin/nimpretty" 5000 | true
-sudo update-alternatives --install "/usr/bin/nimsuggest" "nimsuggest" "$DOTS_OPT/nim-$NIM_VERSION/bin/nimsuggest" 5000 | true
+sudo update-alternatives --install "/usr/bin/nim" "nim" "$DOTS_OPT/nim-$NIM_VERSION/bin/nim" 5000
+sudo update-alternatives --install "/usr/bin/nimble" "nimble" "$DOTS_OPT/nim-$NIM_VERSION/bin/nimble" 5000
+sudo update-alternatives --install "/usr/bin/nimgrep" "nimgrep" "$DOTS_OPT/nim-$NIM_VERSION/bin/nimgrep" 5000
+sudo update-alternatives --install "/usr/bin/nimpretty" "nimpretty" "$DOTS_OPT/nim-$NIM_VERSION/bin/nimpretty" 5000 
+sudo update-alternatives --install "/usr/bin/nimsuggest" "nimsuggest" "$DOTS_OPT/nim-$NIM_VERSION/bin/nimsuggest" 5000
 
 # Stuff
 echo "Installing things..."
