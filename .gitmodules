@@ -10,3 +10,6 @@
 	path = pyenv
 	url = git@github.com:pyenv/pyenv.git
     branch = master
+[submodule "ruby-build"]
+	path = ruby-build
+	url = git@github.com:rbenv/ruby-build.git

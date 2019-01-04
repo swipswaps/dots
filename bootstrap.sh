@@ -47,6 +47,10 @@ ln -sf "$DOTS_ROOT/.gitignore_global" "$DOTS_HOME/.gitignore"
 ln -sf "$DOTS_ROOT/.editorconfig" "$DOTS_HOME/.editorconfig"
 ln -sf "$DOTS_ROOT/.wgetrc" "$DOTS_HOME/.wgetrc"
 
+# Symlink rbenv modules
+mkdir -p "$DOTS_ROOT/rbenv/plugins"
+ln -sf "$DOTS_ROOT/ruby-build" "$DOTS_ROOT/rbenv/plugins/ruby-build"
+
 # Initial APT install
 sudo apt install gparted samba build-essential unzip
 
