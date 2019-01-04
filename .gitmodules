@@ -6,3 +6,7 @@
 	path = rbenv
 	url = git@github.com:rbenv/rbenv.git
 	branch = master
+[submodule "pyenv"]
+	path = pyenv
+	url = git@github.com:pyenv/pyenv.git
+    branch = master

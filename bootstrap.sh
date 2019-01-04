@@ -1,16 +1,12 @@
 #!/bin/bash
 # TODO
-# - PHP composer
 # - Autoremove elementary os / ubuntu bloat?
 # - Development PEM's for localhost
 # - Automate Chromium settings? Ex. chrome://flags/#allow-insecure-localhost
-# - Ensure py3 and Groovy (http://groovy-lang.org/install.html)
+# - Ensure py3
 # - Py3 DS libs numpy scipy pandas matplotlib + jupyter nb https://jupyter.org/install 
-# - mycli / pgcli / robomongo
-# - python3-sphinx
 # - nnn (https://github.com/jarun/nnn)
 # - percona toolkit (https://www.percona.com/doc/percona-toolkit/LATEST/installation.html)
-# - symlink mux to /usr/bin/tmuxinator
 # - local databases for etl? disabled in systemd by default.
 # - update alternatives replace vi(m) with micro
 # - Other missing stuff?...
@@ -46,18 +42,28 @@ ln -sf "$DOTS_ROOT/tmux.conf" "$DOTS_HOME/.tmux.conf"
 ln -sf "$DOTS_ROOT/zshrc.zsh" "$DOTS_HOME/.zshrc"
 ln -sf "$DOTS_ROOT/oh-my-zsh" "$DOTS_HOME/.oh-my-zsh"
 ln -sf "$DOTS_ROOT/rbenv" "$DOTS_HOME/.rbenv-git"
+ln -sf "$DOTS_ROOT/pyenv" "$DOTS_HOME/.pyenv-git"
 ln -sf "$DOTS_ROOT/.gitignore_global" "$DOTS_HOME/.gitignore"
 ln -sf "$DOTS_ROOT/.editorconfig" "$DOTS_HOME/.editorconfig"
 ln -sf "$DOTS_ROOT/.wgetrc" "$DOTS_HOME/.wgetrc"
 
 # Initial APT install
-sudo apt install gparted samba build-essential
+sudo apt install gparted samba build-essential unzip
 
 echo "Bootstrapping $DOTS_OPT ..."
 
 sudo mkdir -p "$DOTS_OPT" && sudo chown ${DOTS_USER}:${DOTS_GROUP} "$DOTS_OPT"
 
 cd ${DOTS_OPT}
+
+# Robomongo
+wget --progress=bar:force --content-disposition \
+    --user-agent="$WGET_UA" \
+    "https://download.robomongo.org/1.2.1/linux/robo3t-1.2.1-linux-x86_64-3e50a65.tar.gz" \
+    -O robo3t.tar.gz
+tar -xvf robo3t.tar.gz
+rm robo3t.tar.gz
+mv robo3t-* robo3t
 
 # IntelliJ
 wget --progress=bar:force --content-disposition \
@@ -70,26 +76,26 @@ rm ideaIU-*.tar.gz
 # OpenJ9 Java 8
 wget --progress=bar:force --user-agent="$WGET_UA" \
     "https://api.adoptopenjdk.net/v2/binary/releases/openjdk8?openjdk_impl=openj9&os=linux&arch=x64&release=latest&type=jdk&heap_size=large" \
-    -O openj9_jdk8.tar.gz
+    -O openj9-jdk8.tar.gz
 
-tar -xvf openj9_jdk8.tar.gz
-mv jdk8u*openj9* openj9_jdk8
-rm openj9_jdk8.tar.gz
+tar -xvf openj9-jdk8.tar.gz
+mv jdk8u*openj9* openj9-jdk8
+rm openj9-jdk8.tar.gz
 
-sudo update-alternatives --install "/usr/bin/java" "java" "$DOTS_OPT/openj9_jdk8/bin/java" 5000 || true
-sudo update-alternatives --install "/usr/bin/javac" "javac" "$DOTS_OPT/openj9_jdk8/bin/javac" 5000 || true
+sudo update-alternatives --install "/usr/bin/java" "java" "$DOTS_OPT/openj9-jdk8/bin/java" 8
+sudo update-alternatives --install "/usr/bin/javac" "javac" "$DOTS_OPT/openj9-jdk8/bin/javac" 8
 
 # OpenJ9 Java 11
 wget --progress=bar:force --user-agent="$WGET_UA" \
     "https://api.adoptopenjdk.net/v2/binary/releases/openjdk11?openjdk_impl=openj9&os=linux&arch=x64&release=latest&type=jdk&heap_size=large" \
-    -O openj9_jdk11.tar.gz
+    -O openj9-jdk11.tar.gz
 
-tar -xvf openj9_jdk11.tar.gz
-mv jdk-11* openj9_jdk11
-rm openj9_jdk11.tar.gz
+tar -xvf openj9-jdk11.tar.gz
+mv jdk-11* openj9-jdk11
+rm openj9-jdk11.tar.gz
 
-sudo update-alternatives --install "/usr/bin/java" "java" "$DOTS_OPT/openj9_jdk11/bin/java" 5001 || true
-sudo update-alternatives --install "/usr/bin/javac" "javac" "$DOTS_OPT/openj9_jdk11/bin/javac" 5001 || true
+sudo update-alternatives --install "/usr/bin/java" "java" "$DOTS_OPT/openj9-jdk11/bin/java" 11
+sudo update-alternatives --install "/usr/bin/javac" "javac" "$DOTS_OPT/openj9-jdk11/bin/javac" 11
 
 # Maven
 wget --progress=bar:force --user-agent="$WGET_UA" \
@@ -99,16 +105,31 @@ wget --progress=bar:force --user-agent="$WGET_UA" \
 tar -xvf maven.tar.gz
 rm maven.tar.gz
 
-sudo update-alternatives --install "/usr/bin/mvn" "mvn" "$DOTS_OPT/apache-maven-3.6.0/bin/mvn" 5000 || true
+sudo update-alternatives --install "/usr/bin/mvn" "mvn" "$DOTS_OPT/apache-maven-3.6.0/bin/mvn" 360
 
 # Gradle
-sudo apt-get install unzip
 wget --progress=bar:force --user-agent="$WGET_UA" \
     "https://downloads.gradle.org/distributions/gradle-5.0-bin.zip" \
     -O gradle.zip
 unzip gradle.zip
 rm gradle.zip
-sudo update-alternatives --install "/usr/bin/gradle" "gradle" "$DOTS_OPT/gradle-5.0/bin/gradle" 5000 || true
+sudo update-alternatives --install "/usr/bin/gradle" "gradle" "$DOTS_OPT/gradle-5.0/bin/gradle" 50
+
+# Groovy
+wget --progress=bar:force --user-agent="$WGET_UA" \
+    "https://bintray.com/artifact/download/groovy/maven/apache-groovy-binary-2.5.5.zip" \
+    -O groovy.zip
+
+unzip groovy.zip
+rm groovy.zip
+
+sudo update-alternatives --install "/usr/bin/grape" "grape" "$DOTS_OPT/groovy-2.5.5/bin/grape" 255
+sudo update-alternatives --install "/usr/bin/groovy" "groovy" "$DOTS_OPT/groovy-2.5.5/bin/groovy" 255
+sudo update-alternatives --install "/usr/bin/groovyc" "groovyc" "$DOTS_OPT/groovy-2.5.5/bin/groovyc" 255
+sudo update-alternatives --install "/usr/bin/groovyConsole" "groovyConsole" "$DOTS_OPT/groovy-2.5.5/bin/groovyConsole" 255
+sudo update-alternatives --install "/usr/bin/groovydoc" "groovydoc" "$DOTS_OPT/groovy-2.5.5/bin/groovydoc" 255
+sudo update-alternatives --install "/usr/bin/groovysh" "groovysh" "$DOTS_OPT/groovy-2.5.5/bin/groovysh" 255
+sudo update-alternatives --install "/usr/bin/java2groovy" "java2groovy" "$DOTS_OPT/groovy-2.5.5/bin/java2groovy" 255
 
 # Telegram
 wget --progress=bar:force --user-agent="$WGET_UA" \
@@ -127,11 +148,11 @@ sh build.sh
 bin/nim c koch
 ./koch tools
 
-sudo update-alternatives --install "/usr/bin/nim" "nim" "$DOTS_OPT/nim-$NIM_VERSION/bin/nim" 5000
-sudo update-alternatives --install "/usr/bin/nimble" "nimble" "$DOTS_OPT/nim-$NIM_VERSION/bin/nimble" 5000
-sudo update-alternatives --install "/usr/bin/nimgrep" "nimgrep" "$DOTS_OPT/nim-$NIM_VERSION/bin/nimgrep" 5000
-sudo update-alternatives --install "/usr/bin/nimpretty" "nimpretty" "$DOTS_OPT/nim-$NIM_VERSION/bin/nimpretty" 5000 
-sudo update-alternatives --install "/usr/bin/nimsuggest" "nimsuggest" "$DOTS_OPT/nim-$NIM_VERSION/bin/nimsuggest" 5000
+sudo update-alternatives --install "/usr/bin/nim" "nim" "$DOTS_OPT/nim-$NIM_VERSION/bin/nim" 19
+sudo update-alternatives --install "/usr/bin/nimble" "nimble" "$DOTS_OPT/nim-$NIM_VERSION/bin/nimble" 19
+sudo update-alternatives --install "/usr/bin/nimgrep" "nimgrep" "$DOTS_OPT/nim-$NIM_VERSION/bin/nimgrep" 19
+sudo update-alternatives --install "/usr/bin/nimpretty" "nimpretty" "$DOTS_OPT/nim-$NIM_VERSION/bin/nimpretty" 19
+sudo update-alternatives --install "/usr/bin/nimsuggest" "nimsuggest" "$DOTS_OPT/nim-$NIM_VERSION/bin/nimsuggest" 19
 
 # Stuff
 echo "Installing things..."
@@ -203,13 +224,14 @@ sudo apt-get update
 sudo apt-get install -y build-essential gcc g++ make zsh tmux tmuxinator ruby git git-extras openvpn php-cli meld nodejs yarn pssh \
     apt-transport-https ca-certificates curl software-properties-common docker-ce virtualbox-5.2 google-cloud-sdk heroku azure-cli kubectl \
     crystal chromium-browser slack-desktop insomnia revelation python-pip zenmap filezilla vlc gimp spotify-client \
+    ruby ruby-dev sqlite3 python3-sphinx
     libssl-dev libxml2-dev libyaml-dev libgmp-dev libreadline-dev #crystal extras
 
-sudo gem install tmuxinator
-#sudo ln -s /usr/local/bin/tmuxinator /usr/local/bin/mux
+#sudo gem install tmuxinator
+sudo ln -sf /usr/local/bin/tmuxinator /usr/local/bin/mux
 
 sudo pip install --upgrade pip
-sudo pip install glances awscli
+sudo pip install glances awscli mycli pgcli
 
 sudo npm install -g typescript
 
@@ -238,6 +260,11 @@ sudo mv ./micro /usr/bin/micro
 
 # Rust toolchain
 curl https://sh.rustup.rs -sSf | sh
+
+# Composer
+
+./install_composer.sh
+sudo mv composer.phar /usr/local/bin/composer
 
 # ZSH as login shell
 echo "Changing login shell"
