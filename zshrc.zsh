@@ -49,6 +49,12 @@ function cd {
     builtin cd "$@" && l
 }
 
+function btafix {
+	index=`pacmd list-cards | grep bluez_card -B1 | grep index | awk '{print $2}'`;
+	# pacmd set-card-profile $index off;
+	pacmd set-card-profile $index a2dp_sink;
+}
+
 set_term_title(){
    echo -en "\033]0;$1\a"
 }
