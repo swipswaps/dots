@@ -41,15 +41,10 @@ git submodule update
 ln -sf "$DOTS_ROOT/tmux.conf" "$DOTS_HOME/.tmux.conf"
 ln -sf "$DOTS_ROOT/zshrc.zsh" "$DOTS_HOME/.zshrc"
 ln -sf "$DOTS_ROOT/oh-my-zsh" "$DOTS_HOME/.oh-my-zsh"
-ln -sf "$DOTS_ROOT/rbenv" "$DOTS_HOME/.rbenv-git"
 ln -sf "$DOTS_ROOT/pyenv" "$DOTS_HOME/.pyenv-git"
 ln -sf "$DOTS_ROOT/.gitignore_global" "$DOTS_HOME/.gitignore"
 ln -sf "$DOTS_ROOT/.editorconfig" "$DOTS_HOME/.editorconfig"
 ln -sf "$DOTS_ROOT/.wgetrc" "$DOTS_HOME/.wgetrc"
-
-# Symlink rbenv modules
-mkdir -p "$DOTS_ROOT/rbenv/plugins"
-ln -sf "$DOTS_ROOT/ruby-build" "$DOTS_ROOT/rbenv/plugins/ruby-build"
 
 # Initial APT install
 sudo apt install gparted samba build-essential unzip
