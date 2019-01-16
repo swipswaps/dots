@@ -1,13 +1,7 @@
 export ZSH=$HOME/.oh-my-zsh
-export RBENV=$HOME/.rbenv-git
 
 if ! [ -d "$ZSH" ]; then
   echo "oh-my-zsh not present"
-  return
-fi
-
-if ! [ -d "$RBENV" ]; then
-  echo "rbenv-git not present"
   return
 fi
 
