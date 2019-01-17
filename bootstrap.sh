@@ -11,6 +11,7 @@
 # - local databases for etl? disabled in systemd by default.
 # - update alternatives replace vi(m) with micro
 # - Other missing stuff?...
+# - https://confluence.jetbrains.com/display/IDEADEV/Inotify+Watches+Limit
 set -e
 set -x
 APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
