@@ -13,6 +13,7 @@
 # - Other missing stuff?...
 # - https://confluence.jetbrains.com/display/IDEADEV/Inotify+Watches+Limit
 # - mitmproxy.org
+# -  sudo adduser matiss kvm   # for android kvm
 set -e
 set -x
 APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
