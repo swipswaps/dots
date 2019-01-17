@@ -3,6 +3,7 @@
 # - Autoremove elementary os / ubuntu bloat?
 # - Development PEM's for localhost
 # - Automate Chromium settings? Ex. chrome://flags/#allow-insecure-localhost
+# - sudo apt-get install qemu-kvm libvirt-bin ubuntu-vm-builder bridge-utils ia32-libs-multiarch # KVM stuff for Android
 # - Ensure py3
 # - Py3 DS libs numpy scipy pandas matplotlib + jupyter nb https://jupyter.org/install 
 # - nnn (https://github.com/jarun/nnn)
