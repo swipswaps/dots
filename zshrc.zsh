@@ -55,10 +55,3 @@ set_term_title(){
 
 export JAVA_CMD=/usr/bin/java
 export LD_LIBRARY_PATH=/lib:/usr/lib:/usr/local/lib
-source $HOME/.cargo/env
-export PYENV_ROOT="$HOME/.pyenv-git"
-export PATH="$PYENV_ROOT/bin:$PATH"
-
-if command -v pyenv 1>/dev/null 2>&1; then
-  eval "$(pyenv init -)"
-fi
