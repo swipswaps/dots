@@ -13,6 +13,7 @@
     - papirus-icon-theme
     - openssh-client
     - openvpn
+    - file-roller
     - network-manager
     - network-manager-gnome
     - network-manager-openvpn
@@ -184,3 +185,9 @@
     - {src: dots/wgetrc, dest: '/home/{{host_username}}/.wgetrc'}
     - {src: dots/gitconfig, dest: '/home/{{host_username}}/.gitconfig'}
     - {src: dots/gitignore, dest: '/home/{{host_username}}/.gitignore'}
+
+- name: Ensure pip3 packages
+  pip: name='{{item}}' executable=pip3 state=latest
+  loop:
+    - backupcpy
+  become: true
