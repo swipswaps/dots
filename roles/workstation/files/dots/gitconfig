@@ -1,5 +1,5 @@
 [core]
-	excludesfile = .gitignore
+	excludesfile = ~/.gitignore
 [user]
 	email = mrtreinis@gmail.com
 	name = Matīss Treinis
