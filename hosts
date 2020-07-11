@@ -1,0 +1,7 @@
+[all:vars]
+ansible_connection=ssh
+ansible_user=matiss
+
+# Normally - localhost
+[workstations]
+localhost ansible_host=localhost ansible_connection=local

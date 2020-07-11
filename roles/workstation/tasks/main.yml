@@ -1,0 +1,184 @@
+---
+- name: Copy APT preferences
+  copy: src=apt_preferences dest=/etc/apt/preferences mode='0644' owner=root group=root
+  become: true
+
+- name: Ensure system packages
+  package: name='{{item}}' state=latest
+  loop:
+    - firmware-linux
+    - plymouth
+    - plymouth-themes
+    - gnome-core
+    - gnome-color-manager
+    - gnome-tweaks
+    - libcanberra-gtk-module
+    - arc-theme
+    - papirus-icon-theme
+    - openssh-client
+    - openvpn
+    - network-manager
+    - network-manager-gnome
+    - network-manager-openvpn
+    - network-manager-openvpn-gnome
+    - debian-archive-keyring
+    - curl
+    - wget
+    - gnupg
+    - apt-transport-https
+    - git
+    - git-extras
+    - whois
+    - traceroute
+    - htop
+    - snapd # ... mljeh...
+    - unzip
+    - p7zip
+    - zsh
+  become: true
+
+- name: Add apt keys
+  apt_key:
+    keyserver: keyserver.ubuntu.com
+    id: '{{item}}'
+  loop:
+    - '9FD3B784BC1C6FC31A8A0A1C1655A0AB68576280' # NodeSource
+    - '2EBF997C15BDA244B6EBF5D84773BD5E130D1D45' # Spotify
+    - 'DB085A08CA13B8ACB917E0F6D938EC0D038651BD' # Slack
+    - '8ED17AF5D7E675EB3EE3BCE98AC3B29174885C03' # AdoptOpenJDK
+    - '9DC858229FC7DD38854AE2D88D81803C0EBFCD88' # Docker
+    - '8756C4F765C9AC3CB6B85D62379CE192D401AB61' # Insomnia
+    - '72ECF46A56B4AD39C907BBB71646B01B86E50310' # Yarn
+    - '4CCA1EAF950CEE4AB83976DCA040830F7FAC5991' # Google-1
+    - 'EB4C1BFD4F042F6DDDCCEC917721F63BD38B4796' # Google-2
+    - '15058500A0235D97F5D10063B188E2B695BD4743' # deb.sury.org
+  become: true
+
+- name: Enable extra repos
+  apt_repository: filename='{{item.file}}' repo='{{item.repo}}' state=present
+  loop:
+    - {file: 'nodejs', repo: 'deb https://deb.nodesource.com/node_12.x {{ansible_distribution_release}} main'}
+    - {file: 'adoptopenjdk', repo: 'deb https://adoptopenjdk.jfrog.io/adoptopenjdk/deb/ {{ansible_distribution_release}} main'}
+    - {file: 'spotify', repo: 'deb http://repository.spotify.com stable non-free'} # HTTP :(
+    - {file: 'slack', repo: 'deb https://packagecloud.io/slacktechnologies/slack/debian/ jessie main'}
+    - {file: 'docker', repo: 'deb [arch=amd64] https://download.docker.com/linux/debian {{ansible_distribution_release}} stable'}
+    - {file: 'insomnia', repo: 'deb https://dl.bintray.com/getinsomnia/Insomnia /'}
+    - {file: 'yarn', repo: 'deb https://dl.yarnpkg.com/debian/ stable main'}
+    - {file: 'google-chrome', repo: 'deb [arch=amd64] https://dl.google.com/linux/chrome/deb/ stable main'}
+    - {file: 'php-sury-org', repo: 'deb https://packages.sury.org/php/ {{ansible_distribution_release}} main'}
+  become: true
+
+- name: Ensure user packages
+  package: name='{{item}}' state=latest
+  loop:
+    - make
+    - cmake
+    - clang-7
+    - clang-8
+    - clang-9
+    - clang-10
+    - openvpn
+    - meld
+    - docker-ce
+    - adoptopenjdk-8-openj9
+    - adoptopenjdk-8-openj9-jre
+    - adoptopenjdk-11-openj9
+    - adoptopenjdk-11-openj9-jre
+    - python3
+    - python3-pip
+    - nodejs
+    - yarn
+    - php7.4-cli
+    - php7.4-mbstring
+    - php7.4-mysql
+    - php7.4-curl
+    - php7.4-iconv
+    - php7.4-intl
+    - php7.4-json
+    - php7.4-pdo
+    - tmux
+    - tmuxinator
+    - filezilla
+    - vlc
+    - gimp
+    - spotify-client
+    - google-chrome-stable
+  become: true
+
+- name: Create /etc/dconf/profile
+  file: path='/etc/dconf/profile' state=directory mode='0755' owner=root group=root
+  become: true
+
+- name: Copy dconf user profile config
+  copy: src=dconf_profile_user dest=/etc/dconf/profile/user mode='0644' owner=root group=root
+  become: true
+
+- name: Create /etc/dconf/db/local.d
+  file: path='/etc/dconf/db/local.d' state=directory mode='0755' owner=root group=root
+  become: true
+
+- name: Copy dconf settings
+  copy: src=dconf_settings.ini dest=/etc/dconf/db/local.d/00-global mode='0644' owner=root group=root
+  notify: [Update dconf]
+  become: true
+
+- name: Copy NetworkManager.conf
+  copy: src=NetworkManager.conf dest=/etc/NetworkManager/NetworkManager.conf mode='0644' owner=root group=root
+  notify: [Restart NetworkManager]
+  become: true
+
+- name: plymouthd.conf
+  copy: src=plymouthd.conf dest=/etc/plymouth/plymouthd.conf mode='0644' owner=root group=root
+  notify: [Update initramfs]
+  become: true
+
+- name: Install fonts
+  copy: src=fonts/ dest=/usr/local/share/fonts
+  become: true
+
+- name: Install menu icon
+  copy: src=menu-icon.svg dest=/etc/menu-icon.svg
+  notify: [Restart NetworkManager]
+  become: true
+
+- name: Install wallpaper
+  copy: src=wallpaper.png dest=/etc/wallpaper.png
+  notify: [Restart NetworkManager]
+  become: true
+
+- name: Install oh-my-zsh
+  git: repo='https://github.com/ohmyzsh/ohmyzsh' dest=/opt/oh-my-zsh
+  become: true
+
+- name: Enable services
+  service: name='{{item}}' state=started enabled=yes
+  loop:
+    - gdm
+  become: yes
+
+- name: Ensure group "docker" exists
+  group:
+    name: docker
+    state: present
+  become: true
+
+- name: Add own user
+  user:
+    name: '{{host_username}}'
+    shell: /bin/zsh
+    groups: docker
+    append: yes
+    create_home: yes
+    password: '*' # Initial password is none, account locked
+    update_password: on_create # Do not reset password from ansible
+  become: true
+
+- name: Ensure personal files
+  copy: src='{{item.src}}'  dest='{{item.dest}}' owner='{{host_username}}' group='{{host_username}}'
+  loop:
+    - {src: dots/zshrc.zsh, dest: '/home/{{host_username}}/.zshrc'}
+    - {src: dots/tmux.conf, dest: '/home/{{host_username}}/.tmux.conf'}
+    - {src: dots/editorconfig, dest: '/home/{{host_username}}/.editorconfig'}
+    - {src: dots/wgetrc, dest: '/home/{{host_username}}/.wgetrc'}
+    - {src: dots/gitconfig, dest: '/home/{{host_username}}/.gitconfig'}
+    - {src: dots/gitignore, dest: '/home/{{host_username}}/.gitignore'}

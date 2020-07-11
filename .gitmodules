@@ -1,8 +1,0 @@
-[submodule "oh-my-zsh"]
-	path = oh-my-zsh
-	url = git@github.com:robbyrussell/oh-my-zsh.git
-	branch = master
-[submodule "pyenv"]
-	path = pyenv
-	url = git@github.com:pyenv/pyenv.git
-    branch = master

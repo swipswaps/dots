@@ -1,0 +1,12 @@
+[core]
+	excludesfile = .gitignore
+[user]
+	email = mrtreinis@gmail.com
+	name = Matīss Treinis
+	signingkey = 82A804C7CCC191D6444B6CCF3781D64D73F1907F
+[push]
+	default = current
+[commit]
+	gpgsign = true
+[diff]
+	tool = meld

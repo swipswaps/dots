@@ -1,0 +1,15 @@
+---
+- name: Restart NetworkManager
+  service: name=network-manager state=restarted
+  become: true
+
+- name: Update dconf
+  shell: dconf update
+  become: true
+
+- name: Update initramfs
+  shell: update-initramfs -u
+  become: true
+
+#- name: Restart resolvconf
+#  service: name=resolvconf state=restarted
