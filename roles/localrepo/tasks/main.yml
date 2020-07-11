@@ -1,0 +1,39 @@
+---
+# Workaround to create a local APT repo from debfiles retrieved from.. somewhere :)
+
+- name: Create /var/lib/localrepo
+  file: path=/var/lib/localrepo state=directory mode='0755' owner=root group=root
+  become: true
+
+- name: Download packages
+  get_url:
+    url: '{{item.url}}'
+    dest: '/var/lib/localrepo/{{item.pkg}}'
+    mode: '0644'
+  notify: [Update localrepo, Update APT]
+  loop:
+    - url: https://github.com/libkafe/kafe/releases/download/v1.1.1/kafe-cli_1.1.1_amd64.deb10.deb
+      pkg: kafe-cli_1.1.1_amd64.deb10.deb
+    - url: https://github.com/libkafe/kafe/releases/download/v1.1.1/libkafe_1.1.1_amd64.deb10.deb
+      pkg: libkafe_1.1.1_amd64.deb10.deb
+    - url: https://updates.getmailspring.com/download?platform=linuxDeb
+      pkg: mailspring-latest.deb
+    - url: https://github.com/zyedidia/micro/releases/download/v2.0.6/micro-2.0.6-amd64.deb
+      pkg: micro-2.0.6-amd64.deb
+  become: true
+
+- name: Enable localrepo
+  apt_repository:
+    filename: localrepo
+    repo: 'deb [trusted=yes] file:///var/lib/ localrepo/'
+    state: present
+  notify: [Update APT]
+  become: true
+
+- name: Ensure localrepo packages
+  package: name='{{item}}' state=latest
+  loop:
+    - kafe-cli
+    - micro
+    - mailspring
+  become: true

@@ -11,11 +11,13 @@ else
   export EDITOR='micro'
 fi
 
+export VISUAL=$EDITOR
+
 export ARCHFLAGS="-arch x86_64"
 
 ZSH_THEME="gallois"
 
-plugins=(git git-extras python sudo systemd wd command-not-found last-working-dir)
+plugins=(git git-extras python pip pipenv sudo systemd wd command-not-found zsh-interactive-cd)
 
 export PATH=${HOME}/.bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 

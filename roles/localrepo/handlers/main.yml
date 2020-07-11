@@ -1,0 +1,8 @@
+---
+- name: Update localrepo
+  shell: cd /var/lib && dpkg-scanpackages localrepo | gzip > /var/lib/localrepo/Packages.gz
+  become: true
+
+- name: Update APT
+  shell: apt update
+  become: true
