@@ -2,11 +2,11 @@
 - name: Ensure system packages
   package: name='{{item}}' state=latest
   loop:
-    - lightdm
     - firmware-linux
     - plymouth
     - plymouth-themes
     - gnome-core
+    - gdm3
     - gnome-color-manager
     - gnome-tweaks
     - libcanberra-gtk-module
@@ -132,14 +132,6 @@
   notify: [Restart NetworkManager]
   become: true
 
-- name: Copy lightdm.conf
-  copy: src=lightdm.conf dest=/etc/lightdm/lightdm.conf mode='0644' owner=root group=root
-  become: true
-
-- name: Copy lightdm-gtk-greeter.conf
-  copy: src=lightdm-gtk-greeter.conf dest=/etc/lightdm/lightdm-gtk-greeter.conf mode='0644' owner=root group=root
-  become: true
-
 #  Not sure if I actually want this.
 #- name: plymouthd.conf
 #  copy: src=plymouthd.conf dest=/etc/plymouth/plymouthd.conf mode='0644' owner=root group=root
@@ -163,15 +155,10 @@
 - name: Install oh-my-zsh
   git: repo='https://github.com/ohmyzsh/ohmyzsh' dest=/opt/oh-my-zsh
   become: true
-
-- name: Disable gdm
-  service: name=gdm state=stopped enabled=no
-  become: yes
-
 - name: Enable services
   service: name='{{item}}' state=started enabled=yes
   loop:
-    - lightdm
+    - gdm
   become: yes
 
 - name: Ensure group "docker" exists
