@@ -1,8 +1,4 @@
 ---
-- name: Copy APT preferences
-  copy: src=apt_preferences dest=/etc/apt/preferences mode='0644' owner=root group=root
-  become: true
-
 - name: Ensure system packages
   package: name='{{item}}' state=latest
   loop:
@@ -127,10 +123,11 @@
   notify: [Restart NetworkManager]
   become: true
 
-- name: plymouthd.conf
-  copy: src=plymouthd.conf dest=/etc/plymouth/plymouthd.conf mode='0644' owner=root group=root
-  notify: [Update initramfs]
-  become: true
+#  Not sure if I actually want this.
+#- name: plymouthd.conf
+#  copy: src=plymouthd.conf dest=/etc/plymouth/plymouthd.conf mode='0644' owner=root group=root
+#  notify: [Update initramfs]
+#  become: true
 
 - name: Install fonts
   copy: src=fonts/ dest=/usr/local/share/fonts
@@ -162,7 +159,7 @@
     state: present
   become: true
 
-- name: Add own user
+- name: Update own user
   user:
     name: '{{host_username}}'
     shell: /bin/zsh
