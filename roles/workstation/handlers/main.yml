@@ -11,5 +11,5 @@
   shell: update-initramfs -u
   become: true
 
-#- name: Restart resolvconf
-#  service: name=resolvconf state=restarted
+- name: Install fetchfox stable
+  shell: fetchfox stable

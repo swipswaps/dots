@@ -1,7 +1,8 @@
 ---
 - name: Update localrepo
-  shell: dpkg-scanpackages localrepo | gzip > /var/lib/localrepo/Packages.gz
-  chdir: /var/lib
+  shell:
+    cmd: 'dpkg-scanpackages localrepo | gzip > /var/lib/localrepo/Packages.gz'
+    chdir: /var/lib
   become: true
 
 - name: Update APT

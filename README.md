@@ -37,7 +37,6 @@ my best to keep the manifests somewhat maintainable for the benefit of my own sa
 - Base OS installation is still pretty manual. Backports and non-free is required.
 - Gnome shell extensions - `Arc menu`, `Dash to panel`, `Openweather`, `User themes`
 - Jetbrains toolbox installation (no deb available)
-- Non-ESR Firefox (no deb available)
 
 ## But but but my bootstrap scripts and manual copy pasting of everything?!
 

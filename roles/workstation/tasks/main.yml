@@ -189,6 +189,11 @@
     - backupcpy
   become: true
 
+- name: Ensure fetchfox
+  pip: name='fetchfox' executable=pip3 state=present
+  notify: [Install fetchfox stable]
+  become: true
+
 - name: Enable services
   service: name='{{item}}' state=started enabled=yes
   loop:
