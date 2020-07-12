@@ -155,11 +155,6 @@
 - name: Install oh-my-zsh
   git: repo='https://github.com/ohmyzsh/ohmyzsh' dest=/opt/oh-my-zsh
   become: true
-- name: Enable services
-  service: name='{{item}}' state=started enabled=yes
-  loop:
-    - gdm
-  become: yes
 
 - name: Ensure group "docker" exists
   group:
@@ -193,3 +188,9 @@
   loop:
     - backupcpy
   become: true
+
+- name: Enable services
+  service: name='{{item}}' state=started enabled=yes
+  loop:
+    - gdm
+  become: yes
