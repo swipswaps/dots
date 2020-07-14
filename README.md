@@ -78,7 +78,6 @@ This is required because Ansible automates package installation, changes setting
 - During initial setup, `dconf update` is not executed properly and needs to be run second time manually after all changes are applied.
 - During initial setup, localrepo packages are not generated properly.
 - Telegram Desktop is old. Very, very old.
-- gitconfig should be a template and be configured from `group_vars/all`
 - localrepo - it's a dirty hack to obtain some packages automatically. I'd much rather not have this.
 
 ## Motivation
