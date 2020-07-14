@@ -58,10 +58,13 @@ some settings locally without having them later reverted by Ansible.
 3. Install Ansible `sudo pip3 install ansible`
 4. Clone this repository somewhere. I usually use `~/dots/`.
 5. Edit `group_vars/all` as required.
-6. As a regular user (probably the same as in `group_vars/all`, execute Ansible as shown bellow:
+6. As a regular user (probably the same as in `group_vars/all`), execute Ansible as shown bellow:
 
 `ansible-playbook -i hosts site.yml -K -C` to run Ansible in check mode.
 `ansible-playbook -i hosts site.yml -K` to run Ansible against localhost.
+
+Setup requires root privileges (but of course it does). Ansible will ask you for your password to become root user. 
+This is required because Ansible automates package installation, changes settings only accessible to root etc.
 
 ## Things not yet automated
 
