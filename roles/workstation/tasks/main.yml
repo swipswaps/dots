@@ -2,6 +2,7 @@
 - name: Ensure system packages
   package: name='{{item}}' state=latest
   loop:
+    - linux-image-5.6.0-0.bpo.2-amd64
     - firmware-linux
     - plymouth
     - plymouth-themes
@@ -12,6 +13,7 @@
     - libcanberra-gtk-module
     - arc-theme
     - papirus-icon-theme
+    - openssh-server
     - openssh-client
     - openvpn
     - file-roller
@@ -29,10 +31,11 @@
     - whois
     - traceroute
     - htop
-    - snapd # ... mljeh...
     - unzip
     - p7zip
     - zsh
+    - nftables
+    - hexedit
   become: true
 
 - name: Add apt keys
@@ -75,8 +78,6 @@
     - cmake
     - clang-7
     - clang-8
-    # - clang-9
-    # - clang-10
     - openvpn
     - meld
     - docker-ce
@@ -96,6 +97,8 @@
     - php7.4-intl
     - php7.4-json
     - php7.4-pdo
+    - php7.4-xml
+    - composer
     - tmux
     - tmuxinator
     - filezilla
@@ -108,6 +111,7 @@
     - insomnia
     - atom
     - fzf
+    - memcached
   become: true
 
 - name: Create /etc/dconf/profile
@@ -132,11 +136,15 @@
   notify: [Restart NetworkManager]
   become: true
 
-#  Not sure if I actually want this.
-#- name: plymouthd.conf
-#  copy: src=plymouthd.conf dest=/etc/plymouth/plymouthd.conf mode='0644' owner=root group=root
-#  notify: [Update initramfs]
-#  become: true
+- name: Copy sshd_config
+  copy: src=sshd_config dest=/etc/ssh/sshd_config mode='0644' owner=root group=root
+  notify: [Restart sshd]
+  become: true
+
+- name: plymouthd.conf
+  copy: src=plymouthd.conf dest=/etc/plymouth/plymouthd.conf mode='0644' owner=root group=root
+  notify: [Update initramfs]
+  become: true
 
 - name: Install fonts
   copy: src=fonts/ dest=/usr/local/share/fonts
@@ -156,6 +164,11 @@
   git: repo='https://github.com/ohmyzsh/ohmyzsh' dest=/opt/oh-my-zsh
   become: true
 
+- name: Install nftables.conf
+  copy: src=nftables.conf dest=/etc/nftables.conf
+  notify: [Reload nftables]
+  become: true
+
 - name: Ensure group "docker" exists
   group:
     name: docker
@@ -173,20 +186,59 @@
     update_password: on_create # Do not reset password from ansible
   become: true
 
+- name: Ensure home directory has correct permissions
+  file: path='/home/{{host_username}}/' state=directory mode='0700' owner='{{host_username}}' group='{{host_username}}'
+  become: true
+
+- name: Create ~/.ssh/
+  file: path='/home/{{host_username}}/.ssh' state=directory mode='0700' owner='{{host_username}}' group='{{host_username}}'
+  become: true
+
+- name: Create ~/.atom/
+  file: path='/home/{{host_username}}/.atom' state=directory mode='0700' owner='{{host_username}}' group='{{host_username}}'
+  become: true
+
 - name: Ensure personal files
-  copy: src='{{item.src}}'  dest='{{item.dest}}' owner='{{host_username}}' group='{{host_username}}'
+  copy: src='{{item.src}}'  dest='{{item.dest}}' mode='0600' owner='{{host_username}}' group='{{host_username}}'
   loop:
     - {src: dots/zshrc.zsh, dest: '/home/{{host_username}}/.zshrc'}
     - {src: dots/tmux.conf, dest: '/home/{{host_username}}/.tmux.conf'}
     - {src: dots/editorconfig, dest: '/home/{{host_username}}/.editorconfig'}
     - {src: dots/wgetrc, dest: '/home/{{host_username}}/.wgetrc'}
-    - {src: dots/gitconfig, dest: '/home/{{host_username}}/.gitconfig'}
     - {src: dots/gitignore, dest: '/home/{{host_username}}/.gitignore'}
+    - {src: dots/.atom/config.cson, dest: '/home/{{host_username}}/.atom/config.cson'}
+    - {src: dots/.atom/styles.less, dest: '/home/{{host_username}}/.atom/styles.less'}
+
+- name: Ensure personal files (from templates)
+  template: src='{{item.src}}'  dest='{{item.dest}}' mode='0600' owner='{{host_username}}' group='{{host_username}}'
+  loop:
+    - {src: dots/gitconfig, dest: '/home/{{host_username}}/.gitconfig'}
+    - {src: dots/authorized_keys, dest: '/home/{{host_username}}/.ssh/authorized_keys'}
+
+- name: Ensure default directories in home
+  file: path='{{item}}' state=directory mode='0700' owner='{{host_username}}' group='{{host_username}}'
+  loop:
+    - '/home/{{host_username}}/dots'
+    - '/home/{{host_username}}/CLionProjects'
+    - '/home/{{host_username}}/IdeaProjects'
+  become: true
+
+- name: Set home folder icons
+  shell: 'gio set -t string {{item.dir}} metadata::custom-icon file://{{item.icon}}'
+  changed_when: false # Really not that important...
+  loop:
+    - {dir: '/home/{{host_username}}/CLionProjects', icon: '/usr/share/icons/Papirus/64x64/places/folder-cyan-development.svg'}
+    - {dir: '/home/{{host_username}}/IdeaProjects', icon: '/usr/share/icons/Papirus/64x64/places/folder-pink-development.svg'}
+    - {dir: '/home/{{host_username}}/dots', icon: '/usr/share/icons/Papirus/64x64/places/folder-orange-development.svg'}
 
 - name: Ensure pip3 packages
   pip: name='{{item}}' executable=pip3 state=latest
   loop:
+    - ansible # Yo dawg i herd you like Ansible so we put a Ansible in yo Ansible so you can automate while u automate
     - backupcpy
+    - pipenv
+    - Django
+    - docker-compose
   become: true
 
 - name: Ensure fetchfox
@@ -198,4 +250,10 @@
   service: name='{{item}}' state=started enabled=yes
   loop:
     - gdm
+    - memcached
+    - sshd
   become: yes
+
+- name: Install Bitwarden CLI
+  yarn: name='@bitwarden/cli' global=yes state=latest production=yes
+  become: true

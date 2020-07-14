@@ -34,3 +34,4 @@ set_term_title(){
    echo -en "\033]0;$1\a"
 }
 
+eval "$(bw completion --shell zsh); compdef _bw bw;"
