@@ -68,8 +68,6 @@ This is required because Ansible automates package installation, changes setting
 
 ## Things not yet automated
 
-- Base OS installation is still pretty manual. Backports and non-free is required. This could be solved somewhat
-    using [Debian Installer](https://www.debian.org/releases/etch/i386/apb.html.en) automation.
 - Gnome shell extensions are not automatically installed, but are required - `Arc menu`, `Dash to panel`, `Openweather`, `User themes`.
 - JetBrains Toolbox (no deb available).
 

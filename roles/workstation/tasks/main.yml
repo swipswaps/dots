@@ -1,4 +1,14 @@
 ---
+- name: Remove cdrom entries in /apt/sources/list
+  lineinfile:
+    path: /etc/apt/sources.list
+    state: absent
+    regexp: '^deb cdrom'
+  notify: [Update APT]
+  become: true
+
+- meta: flush_handlers
+
 - name: Ensure system packages
   package: name='{{item}}' state=latest
   loop:
@@ -21,6 +31,9 @@
     - network-manager-gnome
     - network-manager-openvpn
     - network-manager-openvpn-gnome
+    - resolvconf
+    - dnsmasq
+    - dnsutils
     - debian-archive-keyring
     - curl
     - wget
@@ -36,6 +49,11 @@
     - zsh
     - nftables
     - hexedit
+    - debian-goodies
+    - debsums
+    - debsecan
+    - libpam-tmpdir
+    - apt-listbugs
   become: true
 
 - name: Add apt keys
@@ -54,6 +72,9 @@
     - 'EB4C1BFD4F042F6DDDCCEC917721F63BD38B4796' # Google-2
     - '15058500A0235D97F5D10063B188E2B695BD4743' # deb.sury.org
     - '0A0FAB860D48560332EFB581B75442BBDE9E3B09' # Atom
+    - '54A647F9048D5688D7DA2ABE6A030B21BA07F4FB' # Google Cloud SDK
+    - 'C80E383C3DE9F082E01391A0366C67DE91CA5D5F' # Lynis
+    - 'DBA36B5181D0C816F630E889D980A17457F6FB06' # Signal
   become: true
 
 - name: Enable extra repos
@@ -69,11 +90,15 @@
     - {file: 'google-chrome', repo: 'deb [arch=amd64] https://dl.google.com/linux/chrome/deb/ stable main'}
     - {file: 'php-sury-org', repo: 'deb https://packages.sury.org/php/ {{ansible_distribution_release}} main'}
     - {file: 'atom-editor', repo: 'deb [arch=amd64] https://packagecloud.io/AtomEditor/atom/any/ any main'}
+    - {file: 'lynis', repo: 'deb https://packages.cisofy.com/community/lynis/deb/ stable main'}
+    - {file: 'google-cloud-sdk', repo: 'deb https://packages.cloud.google.com/apt cloud-sdk main'}
+    - {file: 'signal', repo: 'deb [arch=amd64] https://updates.signal.org/desktop/apt xenial main'}
   become: true
 
 - name: Ensure user packages
   package: name='{{item}}' state=latest
   loop:
+    - lynis
     - make
     - cmake
     - clang-7
@@ -107,11 +132,14 @@
     - spotify-client
     - slack-desktop
     - telegram-desktop
+    - signal-desktop
     - google-chrome-stable
     - insomnia
     - atom
     - fzf
     - memcached
+    - google-cloud-sdk
+    - virt-manager
   become: true
 
 - name: Create /etc/dconf/profile
@@ -126,9 +154,15 @@
   file: path='/etc/dconf/db/local.d' state=directory mode='0755' owner=root group=root
   become: true
 
-- name: Copy dconf settings
-  copy: src=dconf_settings.ini dest=/etc/dconf/db/local.d/00-global mode='0644' owner=root group=root
-  notify: [Update dconf]
+- name: Ensure system files
+  copy: src='{{item.src}}'  dest='{{item.dest}}' mode='0644' owner='root' group='root'
+  loop:
+    - {src: dconf_settings.ini, dest: /etc/dconf/db/local.d/00-global}
+    - {src: menu-icon.svg, dest: /etc/menu-icon.svg}
+    - {src: wallpaper.png, dest: /etc/wallpaper.png}
+    - {src: issue, dest: /etc/issue}
+    - {src: issue.net, dest: /etc/issue.net}
+    - {src: motd, dest: /etc/motd}
   become: true
 
 - name: Copy NetworkManager.conf
@@ -141,27 +175,36 @@
   notify: [Restart sshd]
   become: true
 
-- name: plymouthd.conf
+- name: Copy dnsmasq config
+  copy: src=dnsmasq.conf dest=/etc/dnsmasq.d/local.conf mode='0644' owner=root group=root
+  notify: [Restart dnsmasq]
+  become: true
+
+- name: Copy interface-order
+  copy: src=interface-order dest=/etc/resolvconf/interface-order mode='0644' owner=root group=root
+  notify: [Update resolvconf]
+  become: true
+
+- name: Ensure default umask
+  lineinfile:
+    path: /etc/pam.d/common-session
+    line: 'session optional pam_umask.so umask=022'
+  become: true
+
+- name: Copy plymouthd.conf
   copy: src=plymouthd.conf dest=/etc/plymouth/plymouthd.conf mode='0644' owner=root group=root
   notify: [Update initramfs]
   become: true
 
+- name: Install oh-my-zsh for root
+  git: repo='https://github.com/ohmyzsh/ohmyzsh' dest=/root/.oh-my-zsh
+  become: true
+
+- name: Install oh-my-zsh for self
+  git: repo='https://github.com/ohmyzsh/ohmyzsh' dest='/home/{{host_username}}/.oh-my-zsh'
+
 - name: Install fonts
   copy: src=fonts/ dest=/usr/local/share/fonts
-  become: true
-
-- name: Install menu icon
-  copy: src=menu-icon.svg dest=/etc/menu-icon.svg
-  notify: [Restart NetworkManager]
-  become: true
-
-- name: Install wallpaper
-  copy: src=wallpaper.png dest=/etc/wallpaper.png
-  notify: [Restart NetworkManager]
-  become: true
-
-- name: Install oh-my-zsh
-  git: repo='https://github.com/ohmyzsh/ohmyzsh' dest=/opt/oh-my-zsh
   become: true
 
 - name: Install nftables.conf
@@ -186,6 +229,12 @@
     update_password: on_create # Do not reset password from ansible
   become: true
 
+- name: Update root
+  user:
+    name: root
+    shell: /bin/zsh
+  become: true
+
 - name: Ensure home directory has correct permissions
   file: path='/home/{{host_username}}/' state=directory mode='0700' owner='{{host_username}}' group='{{host_username}}'
   become: true
@@ -198,7 +247,7 @@
   file: path='/home/{{host_username}}/.atom' state=directory mode='0700' owner='{{host_username}}' group='{{host_username}}'
   become: true
 
-- name: Ensure personal files
+- name: Ensure personal dot files
   copy: src='{{item.src}}'  dest='{{item.dest}}' mode='0600' owner='{{host_username}}' group='{{host_username}}'
   loop:
     - {src: dots/zshrc.zsh, dest: '/home/{{host_username}}/.zshrc'}
@@ -206,8 +255,18 @@
     - {src: dots/editorconfig, dest: '/home/{{host_username}}/.editorconfig'}
     - {src: dots/wgetrc, dest: '/home/{{host_username}}/.wgetrc'}
     - {src: dots/gitignore, dest: '/home/{{host_username}}/.gitignore'}
+    - {src: dots/curlrc, dest: '/home/{{host_username}}/.curlrc'}
     - {src: dots/.atom/config.cson, dest: '/home/{{host_username}}/.atom/config.cson'}
     - {src: dots/.atom/styles.less, dest: '/home/{{host_username}}/.atom/styles.less'}
+
+- name: Ensure root dot files
+  copy: src='{{item.src}}' dest='{{item.dest}}' mode='0600' owner='root' group='root'
+  loop:
+    - {src: dots/zshrc.zsh, dest: '/root/.zshrc'}
+    - {src: dots/editorconfig, dest: '/root/.editorconfig'}
+    - {src: dots/wgetrc, dest: '/root/.wgetrc'}
+    - {src: dots/curlrc, dest: '/root/.curlrc'}
+  become: true
 
 - name: Ensure personal files (from templates)
   template: src='{{item.src}}'  dest='{{item.dest}}' mode='0600' owner='{{host_username}}' group='{{host_username}}'
@@ -239,6 +298,8 @@
     - pipenv
     - Django
     - docker-compose
+    - awscli
+    - notebook
   become: true
 
 - name: Ensure fetchfox
@@ -252,6 +313,15 @@
     - gdm
     - memcached
     - sshd
+    - dnsmasq
+    - resolvconf
+  become: yes
+
+- name: Disable services
+  service: name='{{item}}' state=stopped enabled=no
+  loop:
+    - systemd-networkd
+    - systemd-resolved
   become: yes
 
 - name: Install Bitwarden CLI

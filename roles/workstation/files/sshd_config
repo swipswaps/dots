@@ -19,8 +19,8 @@
 #LoginGraceTime 2m
 PermitRootLogin no
 StrictModes yes
-MaxAuthTries 3
-#MaxSessions 10
+MaxAuthTries 2
+MaxSessions 2
 
 #PubkeyAuthentication yes
 
@@ -41,7 +41,7 @@ HostbasedAuthentication no
 #IgnoreRhosts yes
 
 # To disable tunneled clear text passwords, change to no here!
-PasswordAuthentication no
+PasswordAuthentication yes
 PermitEmptyPasswords no
 
 # Change to yes to enable challenge-response passwords (beware issues with
@@ -71,8 +71,8 @@ GSSAPIAuthentication no
 # and ChallengeResponseAuthentication to 'no'.
 UsePAM yes
 
-#AllowAgentForwarding yes
-#AllowTcpForwarding yes
+AllowAgentForwarding no
+AllowTcpForwarding no
 #GatewayPorts no
 #X11Forwarding no
 #X11DisplayOffset 10
@@ -80,11 +80,11 @@ UsePAM yes
 #PermitTTY yes
 PrintMotd no
 #PrintLastLog yes
-#TCPKeepAlive yes
+TCPKeepAlive no
 #PermitUserEnvironment no
-#Compression delayed
+Compression delayed
 #ClientAliveInterval 0
-#ClientAliveCountMax 3
+ClientAliveCountMax 2
 #UseDNS no
 #PidFile /var/run/sshd.pid
 #MaxStartups 10:30:100
@@ -93,13 +93,16 @@ PrintMotd no
 #VersionAddendum none
 
 # no default banner path
-#Banner none
+Banner /etc/issue.net
 
 # Allow client to pass locale environment variables
 AcceptEnv LANG LC_*
 
 # override default of no subsystems
 Subsystem	sftp	/usr/lib/openssh/sftp-server
+
+# Less known fact - you can ask for both password and publickey! :)
+AuthenticationMethods "publickey,password"
 
 # Example of overriding settings on a per-user basis
 #Match User anoncvs

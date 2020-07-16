@@ -1,4 +1,4 @@
-export ZSH=/opt/oh-my-zsh
+export ZSH=~/.oh-my-zsh
 
 if ! [ -d "$ZSH" ]; then
   echo "oh-my-zsh not present"
@@ -12,8 +12,6 @@ else
 fi
 
 export VISUAL=$EDITOR
-
-export ARCHFLAGS="-arch x86_64"
 
 ZSH_THEME="gallois"
 
@@ -35,3 +33,7 @@ set_term_title(){
 }
 
 eval "$(bw completion --shell zsh); compdef _bw bw;"
+
+if [[ $UID == 0 || $EUID == 0 ]]; then
+  export PS1="%{$fg[cyan]%}[%~% ]%{$FG[202]%}[root]%(?.%{$fg[green]%}.%{$fg[red]%})%B$%b "
+fi
