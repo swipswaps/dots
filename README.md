@@ -26,10 +26,12 @@ my best to keep the manifests somewhat maintainable for the benefit of my own sa
 
 ## What is automated
 
+- Large portion of the operating system installation (see [autoinstall.conf](./autoinstall.conf)).
 - Personal dotfiles, shell, etc.
-- Nearly all the software I use on my workstations is setup automatically.
+- Nearly all the software I use on my workstations is setup automatically (sans user configs @ todo).
 - Defaults for themes, fonts, dconf settings for GNOME3 and extensions.
 - Firewall defaults.
+- Some security defaults, SSHD config etc.
 
 ## Components
 
@@ -45,7 +47,7 @@ my best to keep the manifests somewhat maintainable for the benefit of my own sa
 
 ### dconf settings and system defaults
 
-Desktop user experience configuration is set as system wide default profile instead of using per-user settings.
+Desktop user experience configuration is set as a system wide default profile instead of using per-user settings.
 This is done on purpose - not all of my machines are exactly the same and by using system defaults I can still override
 some settings locally without having them later reverted by Ansible.
 

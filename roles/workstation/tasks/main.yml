@@ -157,12 +157,16 @@
 - name: Ensure system files
   copy: src='{{item.src}}'  dest='{{item.dest}}' mode='0644' owner='root' group='root'
   loop:
-    - {src: dconf_settings.ini, dest: /etc/dconf/db/local.d/00-global}
     - {src: menu-icon.svg, dest: /etc/menu-icon.svg}
     - {src: wallpaper.png, dest: /etc/wallpaper.png}
     - {src: issue, dest: /etc/issue}
     - {src: issue.net, dest: /etc/issue.net}
     - {src: motd, dest: /etc/motd}
+  become: true
+
+- name: Update dconf settings
+  copy: src=dconf_settings.ini dest=/etc/dconf/db/local.d/00-global mode='0644' owner=root group=root
+  notify: [Update dconf]
   become: true
 
 - name: Copy NetworkManager.conf
