@@ -28,8 +28,54 @@ function cd {
     builtin cd "$@" && l
 }
 
-set_term_title(){
-   echo -en "\033]0;$1\a"
+# https://gist.github.com/davejamesmiller/1965569
+ask() {
+    # https://djm.me/ask
+    local prompt default reply
+
+    if [ "${2:-}" = "Y" ]; then
+        prompt="Y/n"
+        default=Y
+    elif [ "${2:-}" = "N" ]; then
+        prompt="y/N"
+        default=N
+    else
+        prompt="y/n"
+        default=
+    fi
+
+    while true; do
+
+        # Ask the question (not using "read -p" as it uses stderr not stdout)
+        print -nP "$1 [$prompt] "
+
+        # Read the answer (use /dev/tty in case stdin is redirected from somewhere else)
+        read reply </dev/tty
+
+        # Default?
+        if [ -z "$reply" ]; then
+            reply=$default
+        fi
+
+        # Check if the reply is valid
+        case "$reply" in
+            Y*|y*) return 0 ;;
+            N*|n*) return 1 ;;
+        esac
+
+    done
+}
+
+take-cwd-ownership() {
+  CWD=`pwd`
+
+  if [[ $CWD = "/" ]]; then
+    echo 'Are you nuts?!'
+  fi
+
+  if ask "%{$FG[202]%}[danger]%F{reset} Do you want to take recursive ownership of directory %{$FG[202]%}\$CWD\%{$reset_color%} as $UID:$GID?" 'N'; then
+    sudo chown -Rf $UID:$GID $CWD
+  fi
 }
 
 eval "$(bw completion --shell zsh); compdef _bw bw;"
@@ -37,3 +83,4 @@ eval "$(bw completion --shell zsh); compdef _bw bw;"
 if [[ $UID == 0 || $EUID == 0 ]]; then
   export PS1="%{$fg[cyan]%}[%~% ]%{$FG[202]%}[root]%(?.%{$fg[green]%}.%{$fg[red]%})%B$%b "
 fi
+

@@ -44,6 +44,7 @@
     - whois
     - traceroute
     - htop
+    - zip
     - unzip
     - p7zip
     - zsh
@@ -75,6 +76,7 @@
     - '54A647F9048D5688D7DA2ABE6A030B21BA07F4FB' # Google Cloud SDK
     - 'C80E383C3DE9F082E01391A0366C67DE91CA5D5F' # Lynis
     - 'DBA36B5181D0C816F630E889D980A17457F6FB06' # Signal
+    - 'AEE35447B5D3E4A69860622702F762CA6730E6A7' # libkafe
   become: true
 
 - name: Enable extra repos
@@ -93,6 +95,7 @@
     - {file: 'lynis', repo: 'deb https://packages.cisofy.com/community/lynis/deb/ stable main'}
     - {file: 'google-cloud-sdk', repo: 'deb https://packages.cloud.google.com/apt cloud-sdk main'}
     - {file: 'signal', repo: 'deb [arch=amd64] https://updates.signal.org/desktop/apt xenial main'}
+    - {file: 'libkafe', repo: 'deb https://dl.cloudsmith.io/public/kafe/libkafe/deb/debian buster main'}
   become: true
 
 - name: Ensure user packages
@@ -140,6 +143,7 @@
     - memcached
     - google-cloud-sdk
     - virt-manager
+    - kafe-cli
   become: true
 
 - name: Create /etc/dconf/profile
@@ -304,6 +308,7 @@
     - docker-compose
     - awscli
     - notebook
+    - cloudsmith-cli
   become: true
 
 - name: Ensure fetchfox
@@ -328,6 +333,26 @@
     - systemd-resolved
   become: yes
 
-- name: Install Bitwarden CLI
-  yarn: name='@bitwarden/cli' global=yes state=latest production=yes
+- name: Install Node global packages (yarn)
+  yarn: name='{{item}}' global=yes state=latest production=yes
+  loop:
+    - '@vue/cli'
+    - '@angular/cli'
+    - 'nativescript'
+    - '@bitwarden/cli'
+  changed_when: false # ignore
+  become: true
+
+- name: Install composer globally
+  script:
+    cmd: scripts/composer-setup.sh
+    chdir: /tmp
+  changed_when: false # ignore
+  become: true
+
+- name: Install Symfony CLI globally
+  script:
+    cmd: scripts/symfony-setup.sh --install-dir=/usr/local/bin/
+    chdir: /tmp
+  changed_when: false # ignore
   become: true
