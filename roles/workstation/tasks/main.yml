@@ -77,6 +77,7 @@
     - 'C80E383C3DE9F082E01391A0366C67DE91CA5D5F' # Lynis
     - 'DBA36B5181D0C816F630E889D980A17457F6FB06' # Signal
     - 'AEE35447B5D3E4A69860622702F762CA6730E6A7' # libkafe
+    - 'E162F504A20CDF15827F718D4B7C549A058F8B6B' # MongoDB v4.2 rel
   become: true
 
 - name: Enable extra repos
@@ -95,7 +96,8 @@
     - {file: 'lynis', repo: 'deb https://packages.cisofy.com/community/lynis/deb/ stable main'}
     - {file: 'google-cloud-sdk', repo: 'deb https://packages.cloud.google.com/apt cloud-sdk main'}
     - {file: 'signal', repo: 'deb [arch=amd64] https://updates.signal.org/desktop/apt xenial main'}
-    - {file: 'libkafe', repo: 'deb https://dl.cloudsmith.io/public/kafe/libkafe/deb/debian buster main'}
+    - {file: 'libkafe', repo: 'deb https://dl.cloudsmith.io/public/kafe/libkafe/deb/debian {{ansible_distribution_release}} main'}
+    - {file: 'mongodb-4.2', repo: 'deb http://repo.mongodb.org/apt/debian {{ansible_distribution_release}}/mongodb-org/4.2 main'}
   become: true
 
 - name: Ensure user packages
@@ -144,6 +146,8 @@
     - google-cloud-sdk
     - virt-manager
     - kafe-cli
+    - mongodb-org-shell
+    - mongodb-org-tools
   become: true
 
 - name: Create /etc/dconf/profile
