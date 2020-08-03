@@ -68,6 +68,18 @@ some settings locally without having them later reverted by Ansible.
 Setup requires root privileges (but of course it does). Ansible will ask you for your password to become root user. 
 This is required because Ansible automates package installation, changes settings only accessible to root etc.
 
+### How to modify and use
+
+1. Fork this repository.
+2. Review and modify [workstation main task collection](./roles/workstation/tasks/main.yml).
+3. Review and modify [files](./roles/workstation/files) and [templates](roles/workstation/templates).
+4. Review and modify [group_vars](./group_vars/all).
+5. Commit and push your changes to your fork. 
+6. Follow the "How to use" as described above.
+
+**IMPORTANT**: you should NEVER add anything you want to keep secret to a public repository, including passwords,
+    private keys and such.
+
 ## Things not yet automated
 
 - Gnome shell extensions are not automatically installed, but are required - `Arc menu`, `Dash to panel`, `Openweather`, `User themes`.

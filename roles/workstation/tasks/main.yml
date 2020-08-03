@@ -1,4 +1,5 @@
 ---
+# After installation, Debian retains CDROM entries in APT. They should be removed.
 - name: Remove cdrom entries in /apt/sources/list
   lineinfile:
     path: /etc/apt/sources.list
@@ -7,12 +8,16 @@
   notify: [Update APT]
   become: true
 
+# Flush handlers for previous task.
 - meta: flush_handlers
 
+# Make sure relevant system and desktop support packages are installed.
 - name: Ensure system packages
   package: name='{{item}}' state=latest
   loop:
     - linux-image-5.6.0-0.bpo.2-amd64
+    - linux-headers-5.6.0-0.bpo.2-amd64
+    - linux-headers-5.6.0-0.bpo.2-common
     - firmware-linux
     - plymouth
     - plymouth-themes
@@ -57,6 +62,7 @@
     - apt-listbugs
   become: true
 
+# Ensure relevant APT keys are present on the system to support extra repositories added later.
 - name: Add apt keys
   apt_key:
     keyserver: keyserver.ubuntu.com
@@ -80,6 +86,7 @@
     - 'E162F504A20CDF15827F718D4B7C549A058F8B6B' # MongoDB v4.2 rel
   become: true
 
+# Enable extra repositories needed on the system. Mostly development, productivity etc.
 - name: Enable extra repos
   apt_repository: filename='{{item.file}}' repo='{{item.repo}}' state=present
   loop:
@@ -100,7 +107,7 @@
     - {file: 'mongodb-4.2', repo: 'deb http://repo.mongodb.org/apt/debian {{ansible_distribution_release}}/mongodb-org/4.2 main'}
   become: true
 
-- name: Ensure user packages
+- name: Ensure my packages
   package: name='{{item}}' state=latest
   loop:
     - lynis
@@ -148,8 +155,21 @@
     - kafe-cli
     - mongodb-org-shell
     - mongodb-org-tools
+    - linux-perf-5.6
+    - valgrind
   become: true
 
+- name: Ensure system files
+  copy: src='{{item.src}}'  dest='{{item.dest}}' mode='0644' owner='root' group='root'
+  loop:
+    - {src: menu-icon.svg, dest: /etc/menu-icon.svg} # Used by Arc Menu GNOME extension.
+    - {src: wallpaper.png, dest: /etc/wallpaper.png} # System default wallpaper
+    - {src: issue, dest: /etc/issue} # System banner
+    - {src: issue.net, dest: /etc/issue.net} # System banner - for network clients
+    - {src: motd, dest: /etc/motd} # User motd
+  become: true
+
+# Ensure DCONF profile is present on the system. This deals with desktop customization and defaults.
 - name: Create /etc/dconf/profile
   file: path='/etc/dconf/profile' state=directory mode='0755' owner=root group=root
   become: true
@@ -162,47 +182,44 @@
   file: path='/etc/dconf/db/local.d' state=directory mode='0755' owner=root group=root
   become: true
 
-- name: Ensure system files
-  copy: src='{{item.src}}'  dest='{{item.dest}}' mode='0644' owner='root' group='root'
-  loop:
-    - {src: menu-icon.svg, dest: /etc/menu-icon.svg}
-    - {src: wallpaper.png, dest: /etc/wallpaper.png}
-    - {src: issue, dest: /etc/issue}
-    - {src: issue.net, dest: /etc/issue.net}
-    - {src: motd, dest: /etc/motd}
-  become: true
-
 - name: Update dconf settings
   copy: src=dconf_settings.ini dest=/etc/dconf/db/local.d/00-global mode='0644' owner=root group=root
   notify: [Update dconf]
   become: true
+# END
 
+# Configure network manager
 - name: Copy NetworkManager.conf
   copy: src=NetworkManager.conf dest=/etc/NetworkManager/NetworkManager.conf mode='0644' owner=root group=root
   notify: [Restart NetworkManager]
   become: true
 
+# Configure SSH server
 - name: Copy sshd_config
   copy: src=sshd_config dest=/etc/ssh/sshd_config mode='0644' owner=root group=root
   notify: [Restart sshd]
   become: true
 
+# Configure local caching DNS
 - name: Copy dnsmasq config
   copy: src=dnsmasq.conf dest=/etc/dnsmasq.d/local.conf mode='0644' owner=root group=root
   notify: [Restart dnsmasq]
   become: true
 
+# Ensure network interfaces are scanned in certain order for resolvconf
 - name: Copy interface-order
   copy: src=interface-order dest=/etc/resolvconf/interface-order mode='0644' owner=root group=root
   notify: [Update resolvconf]
   become: true
 
+# Configure default system UMASK (https://wiki.debian.org/Permissions)
 - name: Ensure default umask
   lineinfile:
     path: /etc/pam.d/common-session
     line: 'session optional pam_umask.so umask=022'
   become: true
 
+# Configure boot screen
 - name: Copy plymouthd.conf
   copy: src=plymouthd.conf dest=/etc/plymouth/plymouthd.conf mode='0644' owner=root group=root
   notify: [Update initramfs]
@@ -219,6 +236,7 @@
   copy: src=fonts/ dest=/usr/local/share/fonts
   become: true
 
+# Configure firewall
 - name: Install nftables.conf
   copy: src=nftables.conf dest=/etc/nftables.conf
   notify: [Reload nftables]
@@ -230,6 +248,7 @@
     state: present
   become: true
 
+# Ensure own user settings
 - name: Update own user
   user:
     name: '{{host_username}}'
@@ -294,6 +313,7 @@
     - '/home/{{host_username}}/IdeaProjects'
   become: true
 
+# Configure icons in Nautilus for some directories.
 - name: Set home folder icons
   shell: 'gio set -t string {{item.dir}} metadata::custom-icon file://{{item.icon}}'
   changed_when: false # Really not that important...
@@ -302,6 +322,7 @@
     - {dir: '/home/{{host_username}}/IdeaProjects', icon: '/usr/share/icons/Papirus/64x64/places/folder-pink-development.svg'}
     - {dir: '/home/{{host_username}}/dots', icon: '/usr/share/icons/Papirus/64x64/places/folder-orange-development.svg'}
 
+# Install python extra packages and ensure they are up to date.
 - name: Ensure pip3 packages
   pip: name='{{item}}' executable=pip3 state=latest
   loop:
@@ -320,6 +341,7 @@
   notify: [Install fetchfox stable]
   become: true
 
+# Make sure system services we explicitly need are running and enabled.
 - name: Enable services
   service: name='{{item}}' state=started enabled=yes
   loop:
@@ -330,6 +352,7 @@
     - resolvconf
   become: yes
 
+# Disable services we do not need.
 - name: Disable services
   service: name='{{item}}' state=stopped enabled=no
   loop:
