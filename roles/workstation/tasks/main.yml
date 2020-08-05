@@ -157,6 +157,8 @@
     - mongodb-org-tools
     - linux-perf-5.6
     - valgrind
+    - sshpass
+    - zenmap
   become: true
 
 - name: Ensure system files
