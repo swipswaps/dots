@@ -110,3 +110,5 @@ AuthenticationMethods "publickey,password"
 #	AllowTcpForwarding no
 #	PermitTTY no
 #	ForceCommand cvs server
+
+DebianBanner no
