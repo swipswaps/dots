@@ -159,6 +159,11 @@
     - valgrind
     - sshpass
     - zenmap
+    - liblua5.3-dev
+    - libcurl4-gnutls-dev
+    - libarchive-dev
+    - libssh-dev
+    - libgit2-dev
   become: true
 
 - name: Ensure system files
