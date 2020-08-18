@@ -164,6 +164,7 @@
     - libarchive-dev
     - libssh-dev
     - libgit2-dev
+    - inkscape
   become: true
 
 - name: Ensure system files
@@ -374,6 +375,7 @@
     - '@angular/cli'
     - 'nativescript'
     - '@bitwarden/cli'
+    - 'svgo'
   changed_when: false # ignore
   become: true
 
