@@ -84,3 +84,8 @@ if [[ $UID == 0 || $EUID == 0 ]]; then
   export PS1="%{$fg[cyan]%}[%~% ]%{$FG[202]%}[root]%(?.%{$fg[green]%}.%{$fg[red]%})%B$%b "
 fi
 
+NIMDIR=`realpath -q ~/.nimble/bin`
+
+if [[ -n "$NIMDIR" && -d $NIMDIR ]]; then
+  export PATH=$NIMDIR:$PATH
+fi
