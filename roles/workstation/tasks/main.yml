@@ -358,6 +358,7 @@
     - sshd
     - dnsmasq
     - resolvconf
+    - nftables
   become: yes
 
 # Disable services we do not need.
@@ -376,6 +377,7 @@
     - 'nativescript'
     - '@bitwarden/cli'
     - 'svgo'
+    - 'docusaurus-init'
   changed_when: false # ignore
   become: true
 

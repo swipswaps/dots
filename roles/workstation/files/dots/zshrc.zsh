@@ -15,7 +15,7 @@ export VISUAL=$EDITOR
 
 ZSH_THEME="gallois"
 
-plugins=(git git-extras python pip pipenv sudo systemd wd command-not-found zsh-interactive-cd)
+plugins=(git git-extras python pip sudo systemd wd command-not-found zsh-interactive-cd)
 
 export PATH=${HOME}/.bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
