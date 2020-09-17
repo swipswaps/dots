@@ -15,9 +15,9 @@
 - name: Ensure system packages
   package: name='{{item}}' state=latest
   loop:
-    - linux-image-5.6.0-0.bpo.2-amd64
-    - linux-headers-5.6.0-0.bpo.2-amd64
-    - linux-headers-5.6.0-0.bpo.2-common
+    - linux-image-5.7.0-0.bpo.2-amd64
+    - linux-headers-5.7.0-0.bpo.2-amd64
+    - linux-headers-5.7.0-0.bpo.2-common
     - firmware-linux
     - plymouth
     - plymouth-themes
@@ -110,6 +110,7 @@
 - name: Ensure my packages
   package: name='{{item}}' state=latest
   loop:
+    - cups
     - lynis
     - make
     - cmake
@@ -165,6 +166,9 @@
     - libssh-dev
     - libgit2-dev
     - inkscape
+    - vinagre
+    - libguestfs-tools
+    - cloud-utils
   become: true
 
 - name: Ensure system files
