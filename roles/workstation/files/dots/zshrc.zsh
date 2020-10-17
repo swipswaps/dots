@@ -89,3 +89,10 @@ NIMDIR=`realpath -q ~/.nimble/bin`
 if [[ -n "$NIMDIR" && -d $NIMDIR ]]; then
   export PATH=$NIMDIR:$PATH
 fi
+
+PYENVDIR=`realpath -q ~/.pyenv/bin`
+if [[ -n "$PYENVDIR" && -d $PYENVDIR ]]; then
+  export PATH="$PYENVDIR:$PATH"
+  eval "$(pyenv init -)"
+  eval "$(pyenv virtualenv-init -)"
+fi
