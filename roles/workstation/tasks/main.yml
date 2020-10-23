@@ -158,7 +158,7 @@
     - kafe-cli
     - mongodb-org-shell
     - mongodb-org-tools
-    - linux-perf-5.6
+    - linux-perf-5.8
     - valgrind
     - sshpass
     - zenmap
@@ -169,7 +169,7 @@
     - libgit2-dev
     - inkscape
     - vinagre
-    - libguestfs-tools
+    # - libguestfs-tools # TODO: broken on buster?
     - cloud-utils
     - wrk
     - virtualbox-6.1
@@ -342,7 +342,7 @@
 - name: Ensure pip3 packages
   pip: name='{{item}}' executable=pip3 state=latest
   loop:
-    - ansible # Yo dawg i herd you like Ansible so we put a Ansible in yo Ansible so you can automate while u automate
+    # - ansible # Yo dawg i herd you like Ansible so we put a Ansible in yo Ansible so you can automate while u automate
     - backupcpy
     - pipenv
     - Django
