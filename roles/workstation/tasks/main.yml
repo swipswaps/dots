@@ -140,6 +140,7 @@
     - php7.2-json
     - php7.2-pdo
     - php7.2-xml
+    - php7.2-apcu
     # PHP 7.3
     - php7.3-cli
     - php7.3-mbstring
@@ -151,6 +152,7 @@
     - php7.3-json
     - php7.3-pdo
     - php7.3-xml
+    - php7.3-apcu
     # PHP 7.4
     - php7.4-cli
     - php7.4-mbstring
@@ -162,6 +164,7 @@
     - php7.4-json
     - php7.4-pdo
     - php7.4-xml
+    - php7.4-apcu
     # PHP 8.0
     - php8.0-cli
     - php8.0-mbstring
