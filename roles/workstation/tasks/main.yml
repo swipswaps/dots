@@ -129,15 +129,46 @@
     - python3-pip
     - nodejs
     - yarn
+    # PHP 7.2
+    - php7.2-cli
+    - php7.2-mbstring
+    - php7.2-mysql
+    - php7.2-memcached
+    - php7.2-curl
+    - php7.2-iconv
+    - php7.2-intl
+    - php7.2-json
+    - php7.2-pdo
+    - php7.2-xml
+    # PHP 7.3
+    - php7.3-cli
+    - php7.3-mbstring
+    - php7.3-mysql
+    - php7.3-memcached
+    - php7.3-curl
+    - php7.3-iconv
+    - php7.3-intl
+    - php7.3-json
+    - php7.3-pdo
+    - php7.3-xml
+    # PHP 7.4
     - php7.4-cli
     - php7.4-mbstring
     - php7.4-mysql
+    - php7.4-memcached
     - php7.4-curl
     - php7.4-iconv
     - php7.4-intl
     - php7.4-json
     - php7.4-pdo
     - php7.4-xml
+    # PHP 8.0
+    - php8.0-cli
+    - php8.0-mbstring
+    - php8.0-mysql
+    - php8.0-curl
+    - php8.0-intl
+    - php8.0-xml
     - composer
     - tmux
     - tmuxinator
