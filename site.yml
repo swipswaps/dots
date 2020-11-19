@@ -2,4 +2,3 @@
 - hosts: workstations
   roles:
     - role: workstation
-    - role: localrepo

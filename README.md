@@ -16,7 +16,7 @@ For obvious reasons, you **should not** apply this configuration on your own mac
 vicinity. However, you can definitely use this repository to bootstrap your own setup and to try it all out on
 a disposable virtual machine.
 
-This Ansible project is only guaranteed to be comptible with Debian Stable.
+This Ansible project is only guaranteed to be comptible with Debian 10 (buster).
 
 ## Goals and non-goals
 
@@ -88,9 +88,6 @@ This is required because Ansible automates package installation, changes setting
 ## Known issues
 
 - During initial setup, `dconf update` is not executed properly and needs to be run second time manually after all changes are applied.
-- During initial setup, localrepo packages are not generated properly.
-- Telegram Desktop is old. Very, very old.
-- localrepo - it's a dirty hack to obtain some packages automatically. I'd much rather not have this.
 
 ## Motivation
 
